@@ -27,10 +27,11 @@ def createUniqueID(n):
 
 
 @app.route("/api/shorten_url", methods=["POST"])
-def shortern_url():
+def shorten_url():
     try:
         # get the url from the request body
         data = request.json
+        print(data)
         original_url = data["original_url"]
 
         # Add http if it does not contain http (TinyURL does this)
