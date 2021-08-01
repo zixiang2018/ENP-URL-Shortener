@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { BrowserRouter as Router, Route, Link} from "react-router-dom";
 import UrlShortener from "./components/urlShortener.components";
+import About from "./components/about.components";
 
 class App extends Component {
   render(){
@@ -21,7 +22,8 @@ class App extends Component {
               </nav>
             </div>
             <div className="container mt-5" >
-              <Route path="/" exact component={UrlShortener} />
+              <Route path="/" exact component={UrlShortener} />\
+              <Route path="/about" exact component={About} />
             </div>
       </Router>
     )

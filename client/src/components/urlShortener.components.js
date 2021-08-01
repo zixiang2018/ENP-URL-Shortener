@@ -1,5 +1,4 @@
 import React,{useState} from 'react';
-import {Button,Form} from 'react-bootstrap';
 import axios from 'axios'
 
 
@@ -9,6 +8,8 @@ const URLShortener = ()=>{
         url:"",
         message:""
     })
+
+    const BACKEND_URL = "http://localhost:5000/api"
 
     const baseURL = window.location.origin
     
@@ -24,13 +25,13 @@ const URLShortener = ()=>{
         return shortURL.url && <span className="alert alert-success">Your shortened URL: <a href={shortURL.url} target="_blank">{shortURL.url}</a></span>
     }
     const makeShortURL = async ()=>{    
-        return axios.post("http://localhost:5000/api/shorten_url",{
+        return axios.post(BACKEND_URL+"/shorten_url",{
             original_url: originalURL,
           })
             .then(res => {
                 console.log(res)
                 if (res.data.success){
-                    setShortURL({...shortURL, url: "http://localhost:5000/api/"+res.data.shortened_url, message:""})
+                    setShortURL({...shortURL, url: BACKEND_URL+"/"+res.data.shortened_url, message:""})
                 }else{
                     setShortURL({...shortURL, message:res.data.message})
                 }
