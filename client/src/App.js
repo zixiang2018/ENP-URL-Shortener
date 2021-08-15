@@ -22,7 +22,7 @@ class App extends Component {
               </nav>
             </div>
             <div className="container mt-5" >
-              <Route path="/" exact component={UrlShortener} />\
+              <Route path="/" exact component={UrlShortener} />
               <Route path="/about" exact component={About} />
             </div>
       </Router>
