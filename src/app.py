@@ -24,6 +24,7 @@ db = SQLAlchemy(app)
 def createUniqueID(n):
     return ''.join(random.choices(string.ascii_lowercase +
                              string.digits, k = n))
+                             #  (26 + 10) ^ 10
 
 
 @app.route("/api/shorten_url", methods=["POST"])
@@ -35,7 +36,7 @@ def shorten_url():
         original_url = data["original_url"]
 
         # Add http if it does not contain http (TinyURL does this)
-        if "http" not in original_url:
+        if "http" != original_url[0:4]:
             original_url = "http://" + original_url
 
         # Check if original url is valid
@@ -69,14 +70,14 @@ def shorten_url():
         query = {"shortened_url" : url_alias}
         record = url_map_tab.find_one(query)
         while(record):
-            url_alias = createUniqueID(7)
+            url_alias = createUniqueID(10)
             record = url_map_tab.find_one(query)
         
        
         # ready to add into db     
         try:
             # create new record
-            new_url_map_data = {"shortened_url": url_alias, "original_url": original_url}
+            new_url_map_data = {"shortened_url": url_alias, "original_url": original_url, "count": 0}
             url_map_tab.insert_one(new_url_map_data)
         except Exception as e:
             print(e)
@@ -93,7 +94,13 @@ def get_original_url(uid):
         return jsonify({"message": "invalid uid"}), 500 
     
     # return jsonify({"original_url": record.original_url}), 200
-    return redirect(record["original_url"])
+    if record["count"] < 5:
+        newvalues = { "$set": { "count": record["count"] + 1 } }
+        url_map_tab.update_one(record, newvalues)
+        return redirect(record["original_url"])
+    else:
+        return redirect("http://localhost:3000/")
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
